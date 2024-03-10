@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "jquery": "^3.6.0",
+    "normalize.css": "^8.0.1",
+    "swiper": "^11.0.7"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "css-loader": "^6.2.0",
+    "file-loader": "^6.2.0",
+    "mini-css-extract-plugin": "^2.2.0",
+    "sass": "^1.53.0",
+    "sass-loader": "^12.1.0",
+    "style-loader": "^3.2.1",
+    "webpack-cli": "^4.7.2"
+  },
+  "scripts": {
+    "watch": "cross-env NODE_ENV=development webpack watch",
+    "dev": "cross-env NODE_ENV=development webpack",
+    "build": "cross-env NODE_ENV=production webpack --progress"
+  }
+}
