@@ -18,26 +18,67 @@ use RecursiveIteratorIterator;
 class HTMLHelper
 {
 
-    public static $IMAGE_ASSETS = '/assets/images/';
-    public static $H1_USED = false;
+    /**
+     * @var string defines the base asset folder for images.
+     */
+    public static string $IMAGE_ASSETS = '/images/';
 
-    public static $RENDERED_IMAGES = [];
+    /**
+     * @var bool tracks wether heading level 1 was used already.
+     */
+    public static bool $H1_USED = false;
+
+    /**
+     * @var array adds by render picture tag rendered images to the sitemap
+     */
+    public static array $RENDERED_IMAGES = [];
+
+    /**
+     * @var bool defines wether the headings get changed if in an outside page loop.
+     */
+    public static bool $IN_PAGE_LOOP = false;
+
+
+    /**
+     * Return an Image
+     *
+     * @param      $image
+     * @param bool $inline defines wether svg should be loaded inline or just get the url
+     *
+     * @return string
+     */
+    public static function getImage($image, bool $inline = false): string
+    {
+
+        if ($inline) {
+            $returnString = file_get_contents(get_theme_file_path(self::$IMAGE_ASSETS . $image));
+            if($returnString === false) $returnString = "";
+        } else {
+            $returnString = get_theme_file_uri(self::$IMAGE_ASSETS . $image);
+        }
+
+        return $returnString;
+    }
 
     /**
      * include title template
      * first call is allways h1, except heading is set
      *
-     * @param string        $title string
-     * @param array         $attributes array add classes to heading
-     * @param null|string   $heading string define heading size
-     * @return false|string
+     * @param string    $title string
+     * @param array     $attributes array add classes to heading
+     * @param int|null  $heading string define heading size
+     * @return string
      */
-    public static function getTitle($title, $attributes = [], $heading = null) {
+    public static function getTitle(string $title, array $attributes = [], int $heading = null) : string {
 
         if($heading === null) {
-            $heading = self::$H1_USED ? "2" : "1";
+
+            $heading = self::$H1_USED ? 2 : 1;
+
             self::$H1_USED = true;
         }
+
+        if(self::$IN_PAGE_LOOP) ++$heading;
 
         $attributesString = "";
         $attributesArray = [];
@@ -64,15 +105,14 @@ class HTMLHelper
 
     }
 
-
     /**
      * Loops Blocks of current Post
      *
-     * @param object|null $special_post
+     * @param \WP_Post|null $special_post
      *
      * @return string
      */
-    public static function renderBlockLoop( object $special_post = null): string {
+    public static function renderBlockLoop( \WP_Post $special_post = null): string {
 
         if ($special_post !== null) {
             $post = $special_post;
@@ -102,7 +142,8 @@ class HTMLHelper
      * @param $block
      * @return false|string
      */
-    public static function wrapBlockContent($block) {
+    public static function wrapBlockContent($block): bool|string
+    {
 
         // resolves reusable blocks.
         if($block['blockName'] === "core/block" && (int) $block['attrs']['ref'] > 0) {
@@ -145,7 +186,6 @@ class HTMLHelper
         return ob_get_clean();
 
     }
-
 
     /**
      * Returns default button by given ACF Link-Array.
@@ -206,8 +246,12 @@ class HTMLHelper
 
     /**
      * Renders $images['image_desktop'] and $images['image_mobile'] with Slicr
+     * @param string $type
+     * @param array $images
+     * @return Type|null
+     * @throws \Exception
      */
-    public static function renderPicturetag(array $images, string $type) : ?Type {
+    public static function renderPicturetag(string $type, array $images) : ?Type {
 
         if(!isset($images['image_desktop']) || !$images['image_desktop']) return null;
 
@@ -219,7 +263,12 @@ class HTMLHelper
 
         $fastImgType = FastImg::getType($type, $images['image_desktop']);
 
-        if(isset($images['image_mobile']) && $images['image_mobile'] !== false) $fastImgType->setImages(['mobile' => $images['image_mobile']]);
+        if(isset($images['image_mobile']) && $images['image_mobile'] !== false) {
+            $fastImgType->setImages([
+                'mobile' => $images['image_mobile'],
+                'tablet' => $images['image_mobile']
+            ]);
+        }
 
         return $fastImgType;
 

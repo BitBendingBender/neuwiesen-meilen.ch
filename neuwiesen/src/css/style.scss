@@ -1,5 +1,6 @@
 /* Use npm run watch to compile */
 
+@import "fonts";
 @import "variables";
 @import "bootstrap-setup";
 
@@ -40,14 +41,6 @@ html {
   height: 100%;
   font-size: 10px;
 
-  @include media-breakpoint-down(md) {
-    font-size: 10px;
-  }
-
-  @include media-breakpoint-down(sm) {
-    font-size: 2.666666vw;
-  }
-
 }
 
 body {
@@ -58,10 +51,10 @@ body {
 
   color: $black;
   background-color: $white;
-  font-family: "Times New Roman", sans-serif;
-  font-weight: 300;
-  font-size: 3.4rem;
-  line-height: 1.147058;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 2rem;
+  line-height: 1.05;
 }
 
 a, .button {
@@ -84,7 +77,16 @@ address {
   font-style: normal;
 }
 
-img, picture, video {
+img, picture, video, figure {
+  display: block;
+}
+
+figure {
+  margin: 0;
+}
+
+figcaption {
+  position: static;
   display: block;
 }
 
@@ -98,11 +100,9 @@ h1, .h1 {
 }
 
 h2, .h2 {
-  font-weight: normal;
-  text-transform: uppercase;
-  font-size: 2rem;
-  letter-spacing: .5px;
   margin: 0;
+  font-weight: inherit;
+  font-size: inherit;
 }
 
 .rich-text {
@@ -142,6 +142,9 @@ h2, .h2 {
   }
 }
 
+.text-right {
+  text-align: right;
+}
 
 .accordeon {
 
@@ -352,11 +355,179 @@ h2, .h2 {
   }
 }
 
+.container-fluid {
+  max-width: 1920px + 40px;
+  margin: 0 auto;
+}
+
+.apartment-accordion {
+
+  .accordion-opener {
+
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    > img {
+      width: 3.1rem;
+      margin-right: $container-padding-x * .5;
+      transition: transform .3s;
+    }
+
+    &:hover {
+      > img {
+        transform: translate3d(10%, 0, 0);
+      }
+    }
+
+    & + .accordion-content {
+      padding-left: 5.1rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      img {
+        margin-top: $container-padding-x * 2;
+        width: 32rem;
+      }
+    }
+  }
+
+  &.accordion-open {
+    .accordion-opener > img {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+form, .wpcf7 .wpcf7-form {
+
+  input, textarea, select {
+
+    appearance: none;
+    border-radius: 0;
+    box-shadow: none;
+
+    border: 3px solid currentColor;
+
+    padding: 12px;
+
+    line-height: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+
+    margin: 0;
+
+    display: block;
+    width: 100%;
+
+  }
+
+  ::placeholder {
+    color: currentColor;
+    opacity: 1;
+  }
+
+
+  .wpcf7-form-control-wrap {
+    display: block;
+    margin-top: $container-padding-x;
+    margin-bottom: $container-padding-x;
+  }
+
+  input[type="submit"] {
+    margin-top: $container-padding-x * .5;
+    width: auto;
+    margin-left: auto;
+
+    &:disabled {
+      opacity: .5;
+    }
+  }
+
+  .wpcf7-acceptance {
+
+    padding: 0;
+    display: block;
+
+    .wpcf7-list-item {
+      padding: 0;
+      margin: 0;
+      display: block;
+
+      > label {
+        display: flex;
+        align-items: center;
+
+        input {
+
+          cursor: pointer;
+          padding: 0;
+
+          flex: 0 0 auto;
+          width: 28px;
+          height: 28px;
+          margin-right: $container-padding-x * .5;
+
+          &:checked {
+            background-color: $black;
+          }
+        }
+      }
+    }
+  }
+
+  label {
+
+    display: block;
+
+    .wpcf7-form-control-wrap {
+      margin: 0;
+    }
+
+    & + label {
+      margin-top: $container-padding-x * .5;
+    }
+  }
+
+}
+
 /* Page Styles */
 
 main {
-
   flex: 1 auto;
+}
+
+.page-section {
+
+  border-bottom: 3px solid $black;
+
+  .section-title {
+    padding: 2rem;
+
+
+    // TODO change with correct font
+    > h1, > h2 {
+      margin: 0;
+      font-size: calc(((100vw - 4rem) / 100) * 9.52);
+      margin-left: -.8vw;
+      margin-top: -.7vw;
+      margin-bottom: -.7vw;
+      line-height: .9;
+      display: block;
+    }
+  }
+
+  .outer-section-content section {
+    border-top: 3px solid $black;
+    padding-top: $container-padding-x * .5;
+    padding-bottom: $container-padding-x * .5;
+  }
 
 }
 
@@ -377,3 +548,72 @@ footer {
 }
 
 /* Module Styles */
+
+.block-slider-text {
+
+  overflow: hidden;
+
+  .swiper {
+    overflow: visible;
+  }
+}
+
+.block-lage {
+
+  picture {
+    min-height: 100%;
+    display: flex;
+    img {
+      object-fit: cover;
+    }
+  }
+
+  .legend-container {
+
+    margin-top: $container-padding-x * 2;
+
+    .rich-text {
+
+      ul {
+
+        padding: 0;
+        margin: 0;
+
+        column-count: 2;
+        column-gap: $container-padding-x * .5;
+
+        li {
+          padding: 0;
+          margin: 0;
+          text-indent: -3.6rem;
+          padding-left: 3.6rem;
+          &::before {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+}
+
+.block-wohnungen-visualisierung {
+
+}
+
+.block-wohnungen-text {
+
+  .accordion-content {
+
+    @include media-breakpoint-up(lg) {
+      margin-top: -1.20em;
+      padding-left: 0 !important;
+    }
+
+    > * + * {
+      margin-top: $container-padding-x;
+    }
+
+  }
+
+}

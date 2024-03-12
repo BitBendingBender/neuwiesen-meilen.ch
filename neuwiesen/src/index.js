@@ -10,15 +10,17 @@ import Swiper from 'swiper';
 /**
  * Global Object which is exposed to global window
  */
-window.neuwiesen = new (function() {
+window.neuwiesen = new (function () {
 
     /**
      * This is the Constructor.
      * @constructor
      */
-    var neuwiesen = function() {
+    var neuwiesen = function () {
 
+        this.initBlockSliderText();
         this.initAccordeons();
+        this.initApartmentAccordions();
         this.initMisc();
 
     }
@@ -28,17 +30,64 @@ window.neuwiesen = new (function() {
      */
     neuwiesen.prototype = {
 
+        initBlockSliderText() {
+
+            let $modules = $('.block-slider-text');
+
+            if (!$modules.length) return; // bail
+
+            $modules.each(function () {
+
+                let swiper = new Swiper($(this).find('.swiper').get(0), {
+                    loop: true,
+                    spaceBetween: 20,
+                    slideToClickedSlide: true,
+                    slidesPerView: 1,
+                    centeredSlides: true
+                });
+
+            });
+
+        },
+
+        // TODO: Implement auto closing of other acc.
+        initApartmentAccordions() {
+
+            let $accordions = $('.apartment-accordion');
+
+            if(!$accordions.length) return;
+
+            $accordions.each(function() {
+
+                let $accordion = $(this);
+
+                $('.accordion-opener', this).on('click', function() {
+
+                    if($accordion.hasClass('accordion-open')) {
+                        $accordion.find('.accordion-content').stop().slideUp();
+                        $accordion.removeClass('accordion-open');
+                    } else {
+                        $accordion.find('.accordion-content').stop().slideDown();
+                        $accordion.addClass('accordion-open');
+                    }
+
+                });
+
+            });
+
+        },
+
         /**
          * Init function for Accordeons.
          */
-        initAccordeons: function() {
+        initAccordeons: function () {
 
             var $accordeons = $('.accordeon');
 
             // bail
-            if(!$accordeons.length) return;
+            if (!$accordeons.length) return;
 
-            $('.accordeon-head', $accordeons).on('click', function() {
+            $('.accordeon-head', $accordeons).on('click', function () {
 
                 // first close others but this
                 $('.accordeon-head', $accordeons).not($(this)).parent().removeClass('open').find('.accordeon-content').slideUp();
@@ -52,11 +101,11 @@ window.neuwiesen = new (function() {
         /**
          * Miscellanious stuff
          */
-        initMisc: function() {
+        initMisc: function () {
 
-            $('a[href*="#"]').on('click', function(e) {
+            $('a[href*="#"]').on('click', function (e) {
 
-                if(hashChange($(this).attr('href'))) {
+                if (hashChange($(this).attr('href'))) {
                     e.preventDefault();
                     return false;
                 }
@@ -69,7 +118,7 @@ window.neuwiesen = new (function() {
                 hashChange(window.location.href);
 
                 // if any element error or success defined, scroll to that elem parent section
-                if($('.errors, .success').length > 0) {
+                if ($('.errors, .success').length > 0) {
                     $('body, html').animate({scrollTop: $('.errors, .success').first().parents('section').offset().top + (window.innerWidth < 786 ? -100 : -40)});
                 }
 
@@ -86,17 +135,17 @@ window.neuwiesen = new (function() {
      */
     function hashChange(hrefString) {
 
-        if(hrefString.indexOf('#') !== -1) {
+        if (hrefString.indexOf('#') !== -1) {
 
             var hash = '#' + hrefString.split('#')[1];
 
-            if(hash === '#') return;
+            if (hash === '#') return;
 
             var $elem = $(hash);
 
-            if($elem.length) {
+            if ($elem.length) {
 
-                setTimeout(function() {
+                setTimeout(function () {
 
                     let offset = -$('.logo-header').outerHeight() - 30;
 
@@ -104,7 +153,7 @@ window.neuwiesen = new (function() {
                     $('header').removeClass('open');
 
                     // if is accordeon head, click it
-                    if($elem.hasClass('accordeon-head')) {
+                    if ($elem.hasClass('accordeon-head')) {
                         $elem.trigger('click');
                     }
 

@@ -9,6 +9,7 @@
 
 namespace bbase;
 
+use FastImg\Breakpoint;
 use FastImg\FastImg;
 
 require_once "class.BaseCPT.php";
@@ -42,6 +43,41 @@ class Boot
      */
     public static function setupImageSizes()
     {
+
+        Breakpoint::setDefaults([
+            'mobile' => new Breakpoint('mobile', '(max-width: 414px)'),
+            'tablet' => new Breakpoint('tablet', '(min-width: 415px) and (max-width: 1024px)'),
+            'desktop_small' => new Breakpoint('desktop_small', '(min-width: 1025px) and (max-width: 1440px)'),
+            'desktop' => new Breakpoint('desktop', '(min-width: 1441px)'),
+        ]);
+
+        FastImg::registerType('image-text')->setSizes([
+            [374, -1],
+            [983, -1],
+            [1400, -1],
+            [1880, -1],
+        ]);
+
+        FastImg::registerType('image-right')->setSizes([
+            [374, -1],
+            [983, -1],
+            [930, -1],
+            [1247, -1],
+        ]);
+
+        FastImg::registerType('slider-text')->setSizes([
+            [414, 300],
+            [650, 468],
+            [930, 670],
+            [1250, 900],
+        ]);
+
+        FastImg::registerType('image-raster')->setSizes([
+            [384, 276],
+            [482, 447],
+            [690, 498],
+            [614, 442],
+        ]);
 
     }
 
@@ -125,7 +161,7 @@ class Boot
     public static function initOptionsPage()
     {
         // All theme initialization code goes here...
-        load_theme_textdomain( 'west', get_template_directory() . '/languages' );
+        load_theme_textdomain('west', get_template_directory() . '/languages');
 
         if (function_exists('acf_add_options_page')) {
 
