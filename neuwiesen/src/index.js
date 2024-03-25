@@ -5,7 +5,7 @@ import './css/style.scss';
 
 /** Import dependencies here */
 import $ from 'jquery';
-import Swiper from 'swiper';
+import Swiper from 'swiper/bundle';
 
 /**
  * Global Object which is exposed to global window
@@ -18,9 +18,13 @@ window.neuwiesen = new (function () {
      */
     var neuwiesen = function () {
 
+        this.swipersToUpdate = [];
+
         this.initBlockSliderText();
+        this.initBlockBildRaster();
         this.initAccordeons();
         this.initApartmentAccordions();
+        this.initSectionAccordions();
         this.initMisc();
 
     }
@@ -36,15 +40,69 @@ window.neuwiesen = new (function () {
 
             if (!$modules.length) return; // bail
 
+            let _this = this;
+
             $modules.each(function () {
 
                 let swiper = new Swiper($(this).find('.swiper').get(0), {
                     loop: true,
-                    spaceBetween: 20,
-                    slideToClickedSlide: true,
-                    slidesPerView: 1,
-                    centeredSlides: true
+                    spaceBetween: 15,
+                    slidesPerView: 1.1,
+                    centeredSlides: true,
+                    navigation: {
+                        prevEl: $(this).find('.swiper-button-prev').get(0),
+                        nextEl: $(this).find('.swiper-button-next').get(0),
+                    },
+                    breakpoints: {
+                        768: {
+                            spaceBetween: 20,
+                            slidesPerView: 2,
+                        }
+                    }
                 });
+
+                _this.swipersToUpdate.push(swiper);
+
+            });
+
+        },
+
+        initBlockBildRaster() {
+
+            let $modules = $('.block-bild-raster');
+
+            if (!$modules.length) return; // bail
+
+            let _this = this;
+
+            $modules.each(function () {
+
+                let swiper = new Swiper($(this).find('.swiper').get(0), {
+                    loop: true,
+                    spaceBetween: 15,
+                    slidesPerView: 1.1,
+                    centeredSlides: true,
+                    navigation: {
+                        prevEl: $(this).find('.swiper-button-prev').get(0),
+                        nextEl: $(this).find('.swiper-button-next').get(0),
+                    },
+                    breakpoints: {
+                        768: {
+                            loop: true,
+                            slidesPerView: 2,
+                            spaceBetween: 20,
+                            centeredSlides: true,
+                        },
+                        1024: {
+                            loop: false,
+                            centeredSlides: false,
+                            slidesPerView: 3,
+                            spaceBetween: 20,
+                        }
+                    }
+                });
+
+                _this.swipersToUpdate.push(swiper);
 
             });
 
@@ -64,10 +122,10 @@ window.neuwiesen = new (function () {
                 $('.accordion-opener', this).on('click', function() {
 
                     if($accordion.hasClass('accordion-open')) {
-                        $accordion.find('.accordion-content').stop().slideUp();
+                        $accordion.find('.accordion-content').stop().hide();
                         $accordion.removeClass('accordion-open');
                     } else {
-                        $accordion.find('.accordion-content').stop().slideDown();
+                        $accordion.find('.accordion-content').stop().show();
                         $accordion.addClass('accordion-open');
                     }
 
@@ -90,9 +148,38 @@ window.neuwiesen = new (function () {
             $('.accordeon-head', $accordeons).on('click', function () {
 
                 // first close others but this
-                $('.accordeon-head', $accordeons).not($(this)).parent().removeClass('open').find('.accordeon-content').slideUp();
+                $('.accordeon-head', $accordeons).not($(this)).parent().removeClass('open').find('.accordeon-content').slideUp(100);
 
-                $(this).parent().toggleClass('open').find('.accordeon-content').slideToggle();
+                $(this).parent().toggleClass('open').find('.accordeon-content').slideToggle(100);
+
+            });
+
+        },
+
+        /**
+         * Init function for Accordeons.
+         */
+        initSectionAccordions: function () {
+
+            let $accordions = $('.page-section');
+
+            // bail
+            if (!$accordions.length) return;
+
+            let _this = this;
+
+            $('.section-title', $accordions).on('click', function () {
+
+                let _$this = $(this);
+
+                // first close others but this
+                $(this).parent().toggleClass('open').find('.outer-section-content').stop().slideToggle(200);
+
+                // update swiper slides after displaying
+                for(let i = 0; i < _this.swipersToUpdate.length; ++i) {
+                    _this.swipersToUpdate[i].loopDestroy();
+                    _this.swipersToUpdate[i].loopCreate();
+                }
 
             });
 
@@ -147,14 +234,18 @@ window.neuwiesen = new (function () {
 
                 setTimeout(function () {
 
-                    let offset = -$('.logo-header').outerHeight() - 30;
+                    let offset = 0;
 
-                    $('body, html').animate({scrollTop: $elem.offset().top + offset});
-                    $('header').removeClass('open');
+                    $('body, html').animate({scrollTop: $elem.offset().top + offset}, 100);
 
                     // if is accordeon head, click it
                     if ($elem.hasClass('accordeon-head')) {
                         $elem.trigger('click');
+                    }
+
+                    // if is accordeon head, click it
+                    if ($elem.find('> .section-title').length) {
+                        $elem.find('> .section-title').trigger('click');
                     }
 
                 }, 5);

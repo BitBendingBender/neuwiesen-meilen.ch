@@ -10,11 +10,13 @@ $container-padding-x: 4rem;
 
 $spacers: (
   '0': 0,
+  '15': 1.5rem,
   '20': $container-padding-x * .5,
 );
 
 $grid-breakpoints: (
   xs: 0,
+  sm: 375px,
   md: 768px,
   lg: 1440px,
   xl: 1920px,

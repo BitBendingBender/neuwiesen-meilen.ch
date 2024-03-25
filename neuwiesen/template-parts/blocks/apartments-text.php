@@ -18,9 +18,12 @@ if(!$fields['text_elements'] || count($fields['text_elements']) <= 0) return;
         <img src="<?= HTMLHelper::getImage('accordion-arrow.svg') ?>" alt=""><?= $fields['label'] ?>
     </div>
     <div class="accordion-content" style="display: none;">
-        <?php foreach($fields['text_elements'] as $element) { ?>
-            <div class="row pt-20 pt-lg-0">
-                <div class="col-md-1 offset-md-1 text-md-end">
+        <?php foreach($fields['text_elements'] as $k => $element) { ?>
+            <?php if($k > 0) { ?>
+                <div class="d-block d-md-none mt-15 separator"></div>
+            <?php } ?>
+            <div class="row mt-15 pt-lg-0">
+                <div class="col-md-1 offset-md-1 mb-15 mb-md-0 text-md-end d-md-flex justify-content-end">
                     <?= $element['title'] ?>
                 </div>
                 <div class="col-md-4">
